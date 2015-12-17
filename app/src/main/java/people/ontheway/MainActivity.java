@@ -49,7 +49,7 @@ public class MainActivity extends FragmentActivity
         List<BaseFragment> fragments = initFragments();
         FragmentAdapter adapter = new FragmentAdapter(fragments, getSupportFragmentManager());
         viewpager.setAdapter(adapter);
-        indicator.setViewPager(viewpager);
+        indicator.setViewPager(viewpager,2);//默认显示Tab:我的主页
     }
 
     private List<BaseFragment> initFragments() {
