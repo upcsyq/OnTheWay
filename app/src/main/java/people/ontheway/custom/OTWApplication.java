@@ -10,13 +10,15 @@ import com.alibaba.mobileim.YWIMKit;
 import com.alibaba.mobileim.YWLoginParam;
 import com.alibaba.mobileim.channel.event.IWxCallback;
 import com.alibaba.wxlib.util.SysUtil;
+
+import people.ontheway.OTWUtil;
 //import com.taobao.openimui.sample.InitHelper;
 
 /**
  * Created by Administrator on 2016/3/6.
  */
 public class OTWApplication extends MultiDexApplication{
-    final String APP_KEY = "23015524";//"23317752";
+
     final String LOG_TAG = "OTWApplication";
     private static YWIMKit mIMKit;
     @Override
@@ -34,8 +36,8 @@ public class OTWApplication extends MultiDexApplication{
         //第一个参数是Application Context
         //这里的APP_KEY即应用创建时申请的APP_KEY，同时初始化必须是在主进程中
         if(SysUtil.isMainProcess(this)){
-            YWAPI.init(this, APP_KEY);
-            initOther();
+            YWAPI.init(this, OTWUtil.APP_KEY);
+            //initOther();
         }
     }
 
@@ -44,7 +46,7 @@ public class OTWApplication extends MultiDexApplication{
         final String userid = "testpro1";
         //此对象获取到后，保存为全局对象，供APP使用
         //此对象跟用户相关，如果切换了用户，需要重新获取
-        mIMKit = YWAPI.getIMKitInstance(userid, APP_KEY);
+        mIMKit = YWAPI.getIMKitInstance(userid, OTWUtil.APP_KEY);
 
         //开始登录
         //String userid = "testpro1";

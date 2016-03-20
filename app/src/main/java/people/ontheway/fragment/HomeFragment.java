@@ -1,6 +1,7 @@
 package people.ontheway.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -8,14 +9,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.alibaba.mobileim.IYWLoginService;
 import com.alibaba.mobileim.YWAPI;
 import com.alibaba.mobileim.YWIMKit;
 import com.alibaba.mobileim.YWLoginParam;
 import com.alibaba.mobileim.channel.event.IWxCallback;
+import com.alibaba.mobileim.conversation.EServiceContact;
 import com.alibaba.wxlib.util.SysUtil;
 
+import people.ontheway.OTWUtil;
 import people.ontheway.R;
 
 /**
@@ -31,6 +36,10 @@ public class HomeFragment extends BaseFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    final String LOG_TAG = "HomeFragment";
+    private static YWIMKit mIMKit;
+    private static boolean mLogined = false;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -73,31 +82,70 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //init();
+        initOther();
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        Button button1 = (Button)view.findViewById(R.id.open_session_list);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mLogined) {
+                    Intent intent = mIMKit.getConversationActivityIntent();
+                    startActivity(intent);
+                    Toast.makeText(HomeFragment.this.getActivity(), "你正在进入会话列表", Toast.LENGTH_LONG);
+                }else {
+                    Toast.makeText(HomeFragment.this.getActivity(),"你还没有登录",Toast.LENGTH_LONG);
+                }
+            }
+        });
+
+        Button button2 = (Button)view.findViewById(R.id.open_chat_window);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mLogined) {
+                    final String target = "testpro2";// 消息接收者ID
+                    Intent intent = mIMKit.getChattingActivityIntent(target);
+                    startActivity(intent);
+                    Toast.makeText(HomeFragment.this.getActivity(), "你正在发起单聊", Toast.LENGTH_LONG);
+                }else {
+                    Toast.makeText(HomeFragment.this.getActivity(),"你还没有登录",Toast.LENGTH_LONG);
+                }
+            }
+        });
+
+        Button button3 = (Button)view.findViewById(R.id.open_chat_window);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mLogined) {
+
+                    //userid是客服帐号，第一个参数是客服帐号，第二个是组ID，如果没有，传0
+                    EServiceContact contact = new EServiceContact("userid", 0);
+                    //如果需要发给指定的客服帐号，不需要Server进行分流(默认Server会分流)，请调用EServiceContact对象
+                    //的setNeedByPass方法，参数为false。
+                    //contact.setNeedByPass(false);
+                    Intent intent = mIMKit.getChattingActivityIntent(contact);
+                    startActivity(intent);
+                    Toast.makeText(HomeFragment.this.getActivity(), "你正在跳往客服聊天界面", Toast.LENGTH_LONG);
+                } else {
+                    Toast.makeText(HomeFragment.this.getActivity(), "你还没有登录", Toast.LENGTH_LONG);
+                }
+            }
+        });
+
+        return view;
     }
 
-   /* private void init(){
-        final String APP_KEY = "23317753";
-        //必须首先执行这部分代码, 如果在":TCMSSevice"进程中，无需进行云旺（OpenIM）和app业务的初始化，以节省内存;
-        SysUtil.setApplication(getActivity().getApplicationContext());
-        if(SysUtil.isTCMSServiceProcess(getActivity().getApplicationContext())){
-            return;
-        }
-        //第一个参数是Application Context
-        //这里的APP_KEY即应用创建时申请的APP_KEY，同时初始化必须是在主进程中
-        if(SysUtil.isMainProcess(getActivity().getApplication())){
-            YWAPI.init(getActivity().getApplication(), APP_KEY);
-        }
-
+    private void initOther(){
         //此实现不一定要放在Application onCreate中
         final String userid = "testpro1";
-//此对象获取到后，保存为全局对象，供APP使用
-//此对象跟用户相关，如果切换了用户，需要重新获取
-        YWIMKit mIMKit = YWAPI.getIMKitInstance(userid, APP_KEY);
+        //此对象获取到后，保存为全局对象，供APP使用
+        //此对象跟用户相关，如果切换了用户，需要重新获取
+        mIMKit = YWAPI.getIMKitInstance(userid, OTWUtil.APP_KEY);
 
         //开始登录
-       // String userid = "testpro1";
+        //String userid = "testpro1";
         String password = "taobao1234";
         IYWLoginService loginService = mIMKit.getLoginService();
         YWLoginParam loginParam = YWLoginParam.createLoginParam(userid, password);
@@ -105,22 +153,25 @@ public class HomeFragment extends BaseFragment {
 
             @Override
             public void onSuccess(Object... arg0) {
-                Log.d("aliwx","onSuccess");
+                Log.d(LOG_TAG, "onSuccess");
+                mLogined = true;
+                Toast.makeText(HomeFragment.this.getActivity(), "登录成功", Toast.LENGTH_LONG);
             }
 
             @Override
             public void onProgress(int arg0) {
+                Log.d(LOG_TAG,"onProgress arg0="+arg0);
                 // TODO Auto-generated method stub
-                Log.d("aliwx","onProgress arg0="+arg0);
             }
 
             @Override
             public void onError(int errCode, String description) {
+                Log.d(LOG_TAG,"onError errCode="+errCode);
+                Log.d(LOG_TAG,"onError description="+description);
                 //如果登录失败，errCode为错误码,description是错误的具体描述信息
-                Log.d("aliwx","onError="+errCode+",description="+description);
             }
         });
-    }*/
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
