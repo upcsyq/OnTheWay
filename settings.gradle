@@ -1,1 +1,1 @@
-include ':app',':viewpagerlibrary', ':miuiviewpagerindicator'
+include ':app', ':viewpagerlibrary', ':miuiviewpagerindicator', ':OneSDK'

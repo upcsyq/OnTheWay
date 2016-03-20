@@ -7,4 +7,9 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_miui">MIUIActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    
+    <string name="square_hot_party">热门</string>
+    <string name="square_today_party">今日</string>
+    <string name="square_good_party">好评</string>
 </resources>

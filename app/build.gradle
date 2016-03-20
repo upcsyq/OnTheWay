@@ -10,6 +10,8 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -25,4 +27,9 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.0'
     compile project(':viewpagerlibrary')
     compile project(':miuiviewpagerindicator')
+    compile files('libs/nineoldandroids-2.4.0.jar')
+    //compile files('libs/libammsdk.jar')
+    //compile project(':wx')
+    compile files('libs/multidex.1.0.1.jar')
+    compile project(':OneSDK')
 }

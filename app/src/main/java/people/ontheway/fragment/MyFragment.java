@@ -1,19 +1,24 @@
 package people.ontheway.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import people.ontheway.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MyFragment.OnFragmentInteractionListener} interface
+ * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link MyFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -23,6 +28,14 @@ public class MyFragment extends BaseFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    @Bind(R.id.my_setting_textview)
+    TextView mySettingTextview;
+    @Bind(R.id.headpic)
+    ImageView headpic;
+    @Bind(R.id.my_usename_textview)
+    TextView myUsenameTextview;
+
+    private Activity activity;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -65,7 +78,18 @@ public class MyFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my, container, false);
+        View view = inflater.inflate(R.layout.fragment_my, container, false);
+        ButterKnife.bind(this, view);
+
+        headpic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(activity, LoginActivity.class);//WXEntryActivity
+//                Intent intent = new Intent(activity, WXEntryActivity.class);//
+//                activity.startActivity(intent);
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -78,6 +102,8 @@ public class MyFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        this.activity = activity;
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -90,6 +116,12 @@ public class MyFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     /**
