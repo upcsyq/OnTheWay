@@ -16,7 +16,7 @@ import com.alibaba.wxlib.util.SysUtil;
  * Created by Administrator on 2016/3/6.
  */
 public class OTWApplication extends MultiDexApplication{
-    final String APP_KEY = "23317752";
+    final String APP_KEY = "23015524";//"23317752";
     final String LOG_TAG = "OTWApplication";
     private static YWIMKit mIMKit;
     @Override
@@ -66,7 +66,8 @@ public class OTWApplication extends MultiDexApplication{
 
             @Override
             public void onError(int errCode, String description) {
-                Log.d(LOG_TAG,"onError");
+                Log.d(LOG_TAG,"onError errCode="+errCode);
+                Log.d(LOG_TAG,"onError description="+description);
                 //如果登录失败，errCode为错误码,description是错误的具体描述信息
             }
         });
